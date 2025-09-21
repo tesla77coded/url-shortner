@@ -2,6 +2,7 @@
 
 A small, production-minded URL shortener built with TypeScript, Express, and Supabase — featuring a custom sliding-window rate limiter with pluggable storage (in-memory for local dev, Upstash Redis for cloud).
 
+**Live demo:** [https://url-shortner-ap09.onrender.com](https://url-shortner-ap09.onrender.com)
 
 ---
 
@@ -25,6 +26,39 @@ A small, production-minded URL shortener built with TypeScript, Express, and Sup
 
 ---
 
+## Try it live
+
+You can test the API directly against the deployed demo:
+
+### Shorten a URL
+
+```bash
+curl -X POST "https://url-shortner-ap09.onrender.com/api/shorten" \
+  -H "Content-Type: application/json" \
+  -d '{"longUrl":"https://example.com"}'
+```
+
+Response example:
+
+```json
+{"code":"8","shortUrl":"https://url-shortner-ap09.onrender.com/8"}
+```
+
+### Redirect
+
+```bash
+curl -i "https://url-shortner-ap09.onrender.com/8"
+```
+
+Response example:
+
+```
+HTTP/2 302 Found
+Location: https://example.com
+```
+
+---
+
 ## Quickstart (local / dev using Upstash)
 
 1. Copy `.env.example` → `.env` and fill in values:
@@ -36,7 +70,7 @@ A small, production-minded URL shortener built with TypeScript, Express, and Sup
 2. Install dependencies:
 
    ```bash
-   npm ci
+   npm install
    ```
 3. Dev:
 
@@ -55,7 +89,7 @@ A small, production-minded URL shortener built with TypeScript, Express, and Sup
 
 ## Environment variables
 
-Put these into `.env` :
+Put these into `.env` (do not commit `.env`):
 
 ```
 PORT=3000
@@ -67,6 +101,8 @@ SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>
 RATE_LIMIT_STORE=redis      # 'memory' or 'redis'
 REDIS_URL=rediss://:pwd@usX-...upstash.io:6379
 
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX=10
 ```
 
 ---
@@ -81,7 +117,7 @@ REDIS_URL=rediss://:pwd@usX-...upstash.io:6379
 
 ## Deploying to Render (quick)
 
-* Connect this GitHub repo to Render, set **Build command**: `npm ci && npm run build` and **Start command**: `npm run start`.
+* Connect this GitHub repo to Render, set **Build command**: `npm install && npm run build` and **Start command**: `npm run start`.
 * Add the same environment variables in the Render dashboard (including `REDIS_URL` and Supabase keys).
 * Ensure `RATE_LIMIT_STORE=redis` for production so all instances use Upstash.
 
@@ -102,6 +138,9 @@ REDIS_URL=rediss://:pwd@usX-...upstash.io:6379
 
 ---
 
+## Contributing
+
+PRs welcome — keep changes small and documented. Add tests where appropriate.
 
 ---
 
